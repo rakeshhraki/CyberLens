@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}About - CyberLens{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <div class="about-header">
+        <h2>About CyberLens</h2>
+        <p class="about-subtitle">Static Threat Triage & Malware Analysis Workbench</p>
+    </div>
+
+    <div class="about-content">
+        <div class="about-section">
+            <h3>Purpose</h3>
+            <p>CyberLens is a defensive static analysis platform designed to help security analysts investigate suspicious files by examining static characteristics and presenting evidence-based risk indicators.</p>
+            <p class="tagline-highlight">"See the file. Understand the risk."</p>
+        </div>
+
+        <div class="about-section">
+            <h3>What CyberLens Does</h3>
+            <ul class="feature-list">
+                <li>Safe static file analysis without execution</li>
+                <li>Cryptographic hashing (MD5, SHA-1, SHA-256)</li>
+                <li>File identification and metadata extraction</li>
+                <li>String extraction and analysis</li>
+                <li>Entropy analysis for compression/encryption detection</li>
+                <li>PE file analysis for Windows executables</li>
+                <li>Suspicious indicator detection</li>
+                <li>Transparent risk scoring system</li>
+                <li>Professional investigation reports</li>
+            </ul>
+        </div>
+
+        <div class="about-section">
+            <h3>What CyberLens Does NOT Do</h3>
+            <ul class="limitation-list">
+                <li>CyberLens never executes uploaded files</li>
+                <li>CyberLens does not definitively determine whether a file is malware</li>
+                <li>CyberLens does not perform dynamic analysis or sandboxing</li>
+                <li>CyberLens does not connect to external threat intelligence feeds</li>
+                <li>CyberLens is not a replacement for comprehensive malware analysis</li>
+            </ul>
+        </div>
+
+        <div class="about-section">
+            <h3>Security Model</h3>
+            <p>CyberLens follows a strict static-only analysis approach:</p>
+            <ul class="security-list">
+                <li>All uploaded files are treated as untrusted input</li>
+                <li>Files are never executed, opened, or launched</li>
+                <li>Filenames are sanitized and randomized for storage</li>
+                <li>File size limits prevent resource exhaustion</li>
+                <li>Path traversal protection prevents directory escape</li>
+                <li>Analysis results are indicators, not definitive classifications</li>
+            </ul>
+        </div>
+
+        <div class="about-section">
+            <h3>Intended Use</h3>
+            <p>CyberLens is designed for:</p>
+            <ul class="use-case-list">
+                <li>Security analysts conducting preliminary file triage</li>
+                <li>SOC analysts investigating suspicious attachments</li>
+                <li>Security researchers examining unknown samples</li>
+                <li>Educational purposes and cybersecurity training</li>
+                <li>Building evidence for further investigation in isolated environments</li>
+            </ul>
+        </div>
+
+        <div class="about-section">
+            <h3>Disclaimer</h3>
+            <div class="disclaimer-box">
+                <p>CyberLens performs static analysis and does not execute uploaded files. Results are indicators intended for preliminary security triage and should not be treated as definitive malware classification. Always investigate suspicious files in an isolated, controlled environment.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

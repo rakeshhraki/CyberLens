@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Investigation History - CyberLens{% endblock %}
+
+{% block content %}
+<div class="history-container">
+    <div class="page-head history-header">
+        <div><div class="eyebrow">INVESTIGATION LIBRARY</div><h1>Investigations</h1><p class="history-subtitle">Browse, search and review previous static file assessments.</p></div>
+        <a class="primary-action" href="{{ url_for('analyze') }}"><span>＋</span> New analysis</a>
+    </div>
+
+    <div class="history-controls">
+        <div class="search-box">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search by filename, hash, or ID..."
+            >
+        </div>
+
+        <div class="filter-controls">
+            <select id="severity-filter">
+                <option value="">All Severities</option>
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="CRITICAL">Critical</option>
+            </select>
+
+            <select id="sort-order">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="highest-risk">Highest Risk</option>
+                <option value="lowest-risk">Lowest Risk</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="history-table-container">
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Analysis ID</th>
+                    <th>Filename</th>
+                    <th>File Type</th>
+                    <th>SHA-256</th>
+                    <th>Risk Score</th>
+                    <th>Severity</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="history-table">
+                <tr class="empty-state">
+                    <td colspan="8">
+                        <div class="empty-message">
+                            <p>Loading investigation history...</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    let historyData = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadHistory();
+
+        document
+            .getElementById('search-input')
+            .addEventListener('input', renderHistory);
+
+        document
+            .getElementById('severity-filter')
+            .addEventListener('change', renderHistory);
+
+        document
+            .getElementById('sort-order')
+            .addEventListener('change', renderHistory);
+    });
+
+    async function loadHistory() {
+        const table = document.getElementById('history-table');
+
+        try {
+            const response = await fetch('/api/history');
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || 'Unable to load history');
+            }
+
+            historyData = result.data || [];
+            renderHistory();
+
+        } catch (error) {
+            table.innerHTML = `
+                <tr class="empty-state">
+                    <td colspan="8">
+                        <div class="empty-message">
+                            <p>Unable to load investigation history.</p>
+                            <p>${escapeHtml(error.message)}</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function renderHistory() {
+        const table = document.getElementById('history-table');
+        const searchValue = document
+            .getElementById('search-input')
+            .value
+            .toLowerCase()
+            .trim();
+
+        const severity = document
+            .getElementById('severity-filter')
+            .value;
+
+        const sortOrder = document
+            .getElementById('sort-order')
+            .value;
+
+        let filteredData = historyData.filter(analysis => {
+            const matchesSearch =
+                String(analysis.id).includes(searchValue) ||
+                (analysis.filename || '')
+                    .toLowerCase()
+                    .includes(searchValue) ||
+                (analysis.sha256 || '')
+                    .toLowerCase()
+                    .includes(searchValue);
+
+            const matchesSeverity =
+                !severity ||
+                analysis.severity === severity;
+
+            return matchesSearch && matchesSeverity;
+        });
+
+        filteredData.sort((a, b) => {
+            if (sortOrder === 'newest') {
+                return new Date(b.created_at) - new Date(a.created_at);
+            }
+
+            if (sortOrder === 'oldest') {
+                return new Date(a.created_at) - new Date(b.created_at);
+            }
+
+            if (sortOrder === 'highest-risk') {
+                return (b.risk_score || 0) - (a.risk_score || 0);
+            }
+
+            if (sortOrder === 'lowest-risk') {
+                return (a.risk_score || 0) - (b.risk_score || 0);
+            }
+
+            return 0;
+        });
+
+        if (filteredData.length === 0) {
+            table.innerHTML = `
+                <tr class="empty-state">
+                    <td colspan="8">
+                        <div class="empty-message">
+                            <p>No investigation history found.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        table.innerHTML = filteredData.map(analysis => `
+            <tr>
+                <td>#${analysis.id}</td>
+
+                <td>
+                    ${escapeHtml(analysis.filename)}
+                </td>
+
+                <td>
+                    ${escapeHtml(analysis.file_type || 'Unknown')}
+                </td>
+
+                <td>
+                    <code title="${escapeHtml(analysis.sha256)}">
+                        ${escapeHtml(formatHash(analysis.sha256))}
+                    </code>
+                </td>
+
+                <td>
+                    <strong>
+                        ${analysis.risk_score ?? 0}/100
+                    </strong>
+                </td>
+
+                <td>
+                    <span class="severity-badge severity-${String(
+                        analysis.severity || 'LOW'
+                    ).toLowerCase()}">
+                        ${escapeHtml(analysis.severity || 'LOW')}
+                    </span>
+                </td>
+
+                <td>
+                    ${formatDate(analysis.created_at)}
+                </td>
+
+                <td>
+    <a
+        class="investigation-view-btn"
+        href="/result/${analysis.id}"
+    >
+        VIEW INVESTIGATION
+        <span>→</span>
+    </a>
+</td>
+            </tr>
+        `).join('');
+    }
+
+    function formatHash(hash) {
+        if (!hash) {
+            return 'N/A';
+        }
+
+        return `${hash.substring(0, 12)}...`;
+    }
+
+    function formatDate(dateString) {
+    if (!dateString) {
+        return 'N/A';
+    }
+
+    const date = new Date(dateString);
+
+    if (Number.isNaN(date.getTime())) {
+        return 'N/A';
+    }
+
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    }) + ' · ' +
+    date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit'
+    });
+}
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+</script>
+{% endblock %}

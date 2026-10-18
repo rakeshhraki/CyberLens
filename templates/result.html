@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Result - CyberLens{% endblock %}
+
+{% block content %}
+
+<div class="result-container">
+
+    <div class="result-header">
+        <div><a class="back-link" href="{{ url_for('history') }}">← Back to investigations</a><div class="eyebrow">STATIC ANALYSIS REPORT</div><h1>Analysis result</h1><p>Detailed findings and explainable risk assessment for investigation #{{ analysis_id }}.</p></div>
+        <div class="result-actions">
+            <a href="/api/report/{{ analysis_id }}" class="primary-btn">Export PDF</a>
+            <a href="/analyze" class="secondary-btn">New analysis</a>
+        </div>
+    </div>
+
+    <div id="result-content">
+
+        <div class="loading">
+            <div class="spinner"></div>
+            Loading analysis results...
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const ANALYSIS_ID = {{ analysis_id }};
+</script>
+
+<script src="{{ url_for('static', filename='js/result.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Overview - CyberLens{% endblock %}
+{% block content %}
+<div class="page-head dashboard-head">
+  <div>
+    <div class="eyebrow">STATIC FILE THREAT TRIAGE</div>
+    <h1>Investigation overview</h1>
+    <p>Analyze suspicious files, review recent investigations and monitor potential threats.</p>
+  </div>
+  <div class="head-meta"><span id="workbench-label">SECURITY RESEARCH WORKBENCH</span><strong id="current-date">Today</strong></div>
+</div>
+
+<section class="hero-grid">
+  <div class="analysis-launch">
+    <div class="hero-copy">
+      <div class="section-kicker">PRIMARY ACTION</div>
+      <h2>Analyze a suspicious file</h2>
+      <p>Investigate a file through static analysis without executing it. Detect suspicious patterns, structural anomalies and risk indicators.</p>
+      <a class="primary-action" href="{{ url_for('analyze') }}"><span class="action-plus">+</span> Start analysis</a>
+      <div class="hero-note"><span class="status-dot"></span><span>Static analysis only</span><i>·</i><span>Maximum upload 8 MB</span><i>·</i><span>Safe analysis boundary</span></div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <svg viewBox="0 0 360 270" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="heroFade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D65A31" stop-opacity=".28"/><stop offset="1" stop-color="#D65A31" stop-opacity="0"/></linearGradient></defs>
+        <path d="M40 32H285L328 75V235H40Z" fill="none" stroke="#eee6d9" stroke-width="2"/>
+        <path d="M285 32V75H328" fill="none" stroke="#eee6d9" stroke-width="2"/>
+        <path d="M78 84H244M78 108H214M78 132H190" stroke="#eee6d9" stroke-width="2" stroke-linecap="round" opacity=".65"/>
+        <circle cx="221" cy="164" r="58" fill="none" stroke="#eee6d9" stroke-width="3"/>
+        <circle cx="221" cy="164" r="39" fill="none" stroke="#D65A31" stroke-width="7"/>
+        <path d="M263 207L306 250" stroke="#eee6d9" stroke-width="10" stroke-linecap="round"/>
+        <path d="M221 145l10 10-10 10-10-10z" fill="#D65A31"/>
+        <path d="M25 52H92M25 218H110M268 18V52M308 98V140" stroke="#D65A31" opacity=".5"/>
+        <circle cx="25" cy="52" r="3" fill="#D65A31"/><circle cx="308" cy="98" r="3" fill="#D65A31"/>
+        <rect x="16" y="18" width="320" height="234" fill="url(#heroFade)" opacity=".08"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="workflow-card">
+    <div class="card-heading"><div><span class="section-kicker">WORKFLOW</span><h3>How CyberLens works</h3></div><span class="workflow-count">04 STEPS</span></div>
+    <div class="workflow-steps">
+      <div><b>01</b><span class="workflow-icon">↥</span><span><strong>Upload</strong><small>Select a suspicious file</small></span></div>
+      <div><b>02</b><span class="workflow-icon">□</span><span><strong>Inspect</strong><small>Hashes, metadata & strings</small></span></div>
+      <div><b>03</b><span class="workflow-icon">⌘</span><span><strong>Correlate</strong><small>Indicators & PE analysis</small></span></div>
+      <div><b>04</b><span class="workflow-icon">▥</span><span><strong>Assess</strong><small>Explainable risk score</small></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="metric-grid">
+  <div class="metric-card"><div class="metric-icon">□</div><span>FILES ANALYZED</span><strong id="stat-files-analyzed">0</strong><small>All investigations</small></div>
+  <div class="metric-card metric-risk"><div class="metric-icon">△</div><span>HIGH RISK</span><strong id="stat-high-risk">0</strong><small>Requires review</small></div>
+  <div class="metric-card metric-critical"><div class="metric-icon">◎</div><span>CRITICAL FINDINGS</span><strong id="stat-critical">0</strong><small>Immediate attention</small></div>
+  <div class="metric-card"><div class="metric-icon">▥</div><span>AVERAGE RISK SCORE</span><strong id="stat-avg-risk">0</strong><small>Based on recent analysis</small></div>
+</section>
+
+<section class="dashboard-grid">
+  <div class="panel investigations-panel">
+    <div class="panel-head"><div><span class="section-kicker">LATEST ACTIVITY</span><h3>Recent investigations</h3></div><a href="{{ url_for('history') }}">View all →</a></div>
+    <div class="table-wrap"><table class="data-table"><thead><tr><th>FILE</th><th>TYPE</th><th>RISK SCORE</th><th>SEVERITY</th><th>ANALYZED</th></tr></thead><tbody id="investigations-table"><tr><td colspan="5"><div class="loading-row">Loading investigations...</div></td></tr></tbody></table></div>
+  </div>
+  <div class="side-stack">
+    <div class="panel risk-panel">
+      <div class="panel-head"><div><span class="section-kicker">THREAT PROFILE</span><h3>Risk distribution</h3></div></div>
+      <div class="risk-visual"><div class="risk-donut" id="risk-donut"><div><strong id="risk-total">0</strong><span>FILES</span></div></div><div class="risk-legend">
+        <div><i class="risk-dot low"></i><span>Low risk</span><b id="risk-low">0</b><em id="risk-low-pct">0%</em></div>
+        <div><i class="risk-dot medium"></i><span>Medium risk</span><b id="risk-medium">0</b><em id="risk-medium-pct">0%</em></div>
+        <div><i class="risk-dot high"></i><span>High risk</span><b id="risk-high">0</b><em id="risk-high-pct">0%</em></div>
+        <div><i class="risk-dot critical"></i><span>Critical</span><b id="risk-critical">0</b><em id="risk-critical-pct">0%</em></div>
+      </div></div>
+    </div>
+    <div class="panel activity-panel">
+      <div class="panel-head"><div><span class="section-kicker">EVENT STREAM</span><h3>Analysis activity</h3></div><a href="{{ url_for('history') }}">View all →</a></div>
+      <div id="activity-overview" class="activity-list"><div class="loading-row">Loading activity...</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="dashboard-lower-grid">
+  <div class="panel analysis-info-panel">
+    <div class="panel-head"><div><span class="section-kicker">ANALYSIS SCOPE</span><h3>What CyberLens examines</h3></div></div>
+    <div class="scope-grid">
+      <div><span class="scope-num">01</span><strong>File identity</strong><small>Type, MIME, size & hashes</small></div>
+      <div><span class="scope-num">02</span><strong>Content signals</strong><small>Strings, URLs & indicators</small></div>
+      <div><span class="scope-num">03</span><strong>Binary structure</strong><small>Entropy, PE sections & imports</small></div>
+      <div><span class="scope-num">04</span><strong>Risk assessment</strong><small>Explainable score & verdict</small></div>
+    </div>
+  </div>
+  <div class="static-banner">
+    <div class="banner-mark">C</div>
+    <div><strong>STATIC ANALYSIS ONLY</strong><p>Uploaded files are never executed. CyberLens examines structure, content, metadata and indicators inside an isolated analysis boundary.</p></div>
+    <a href="{{ url_for('about') }}">Learn more →</a>
+  </div>
+</section>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
+
+

@@ -1,0 +1,9 @@
+This is a test file with harmless suspicious indicators for CyberLens testing.
+
+These are strings that trigger indicators but are not malicious:
+powershell.exe
+http://example.test/download
+VirtualAlloc
+password
+
+This file is safe and contains no actual malware.

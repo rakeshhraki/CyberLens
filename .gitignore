@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Environment secrets
+.env
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+instance/*
+!instance/.gitkeep
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# Test/sample files
+*.exe
+
+# IDE / editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test / temporary files
+*.tmp
+*.temp
+
+# Python test/cache
+.pytest_cache/
+.coverage
+htmlcov/

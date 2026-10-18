@@ -1,0 +1,9 @@
+Flask
+Flask-SQLAlchemy
+SQLAlchemy
+python-dotenv
+python-magic
+python-magic-bin
+pefile
+reportlab
+pytest

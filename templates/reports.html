@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - CyberLens{% endblock %}
+
+{% block content %}
+
+<section class="analyze-container">
+
+    <div class="analyze-header">
+        <div class="eyebrow">REPORT CENTER</div>
+
+        <h2>Analysis reports</h2>
+
+        <p class="analyze-subtitle">
+            Open an investigation and export its explainable static-analysis report.
+        </p>
+    </div>
+
+
+    <div class="history-table-container">
+
+        <table class="data-table">
+
+            <thead>
+                <tr>
+                    <th>FILE NAME</th>
+                    <th>RISK</th>
+                    <th>VERDICT</th>
+                    <th>DATE</th>
+                    <th>REPORT</th>
+                </tr>
+            </thead>
+
+            <tbody id="reports-body">
+
+                <tr>
+                    <td colspan="5">
+                        <div class="loading-row">
+                            Loading reports...
+                        </div>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const body = document.getElementById('reports-body');
+
+    try {
+
+        const response = await fetch('/api/history');
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error('Unable to load reports');
+        }
+
+
+        if (!result.data.length) {
+
+            body.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-message">
+                            <strong>No reports yet.</strong>
+                            <span>
+                                Analyze a file to create a report.
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        body.innerHTML = result.data.map(analysis => {
+
+            const severity =
+                String(
+                    analysis.severity || 'LOW'
+                ).toLowerCase();
+
+
+            const date = analysis.created_at
+                ? new Date(
+                    analysis.created_at
+                  ).toLocaleDateString(
+                    undefined,
+                    {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    }
+                  )
+                : 'N/A';
+
+
+            const riskScore =
+                Number(
+                    analysis.risk_score
+                ) || 0;
+
+
+            return `
+                <tr>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(
+                                analysis.filename
+                            )}
+                        </strong>
+                    </td>
+
+
+                    <td>
+                        <strong
+                            class="risk-number risk-${severity}"
+                        >
+                            ${riskScore}
+                        </strong>
+                    </td>
+
+
+                    <td>
+                        <span
+                            class="severity-badge severity-${severity}"
+                        >
+                            ${escapeHtml(
+                                analysis.severity || 'LOW'
+                            )}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        ${date}
+                    </td>
+
+
+                    <td>
+
+                        <a
+                            class="report-download-btn"
+                            href="/api/report/${analysis.id}"
+                        >
+                            DOWNLOAD PDF
+                            <span>↓</span>
+                        </a>
+
+                    </td>
+
+                </tr>
+            `;
+
+        }).join('');
+
+
+    } catch (error) {
+
+        body.innerHTML = `
+            <tr>
+                <td colspan="5">
+
+                    <div class="empty-message">
+
+                        <strong>
+                            Unable to load reports.
+                        </strong>
+
+                    </div>
+
+                </td>
+            </tr>
+        `;
+
+    }
+
+});
+
+
+function escapeHtml(value) {
+
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+}
+
+</script>
+
+{% endblock %}

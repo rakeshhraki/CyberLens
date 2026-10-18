@@ -1,0 +1,395 @@
+{% extends "base.html" %}
+
+{% block title %}Analyze File - CyberLens{% endblock %}
+
+{% block content %}
+
+<div class="analyze-page">
+
+    <!-- PAGE HEADER -->
+    <div class="analyze-page-header">
+        <div>
+            <div class="eyebrow">STATIC INVESTIGATION</div>
+
+            <h1>Analyze a file</h1>
+
+            <p>
+                Upload a file and CyberLens will examine its structure,
+                metadata, content signals and potential risk indicators
+                without executing it.
+            </p>
+        </div>
+
+        <div class="analysis-mode-badge">
+            <span class="mode-indicator"></span>
+
+            <div>
+                <small>ANALYSIS MODE</small>
+                <strong>STATIC ONLY</strong>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MAIN ANALYSIS WORKSPACE -->
+    <div class="analyze-workspace">
+
+        <section class="upload-card">
+
+            <!-- FILE INPUT HEADER -->
+            <div class="upload-card-header">
+                <div>
+                    <span class="section-kicker">FILE INPUT</span>
+                    <h2>Select a file to analyze</h2>
+                </div>
+
+                <span class="file-limit">MAX 8 MB</span>
+            </div>
+
+
+            <!-- DROP ZONE -->
+            <div
+                class="cyberlens-dropzone"
+                id="upload-zone"
+                tabindex="0"
+                role="button"
+                aria-label="Choose a file for analysis"
+            >
+
+                <!-- HIDDEN FILE INPUT -->
+                <input
+                    type="file"
+                    id="file-input"
+                    class="file-input"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
+                >
+
+
+                <!-- CLICKABLE FILE ICON -->
+                <button
+                    type="button"
+                    class="dropzone-icon"
+                    id="file-action-btn"
+                    aria-label="Choose a file"
+                >
+                    <svg
+                        viewBox="0 0 64 64"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                    >
+                        <path
+                            d="M17 9h23l11 11v35H17z"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+
+                        <path
+                            d="M40 9v12h11"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+
+                        <path
+                            d="M32 43V27"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+
+                        <path
+                            d="M25 34l7-7 7 7"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        />
+                    </svg>
+                </button>
+
+
+                <!-- DROPZONE TEXT -->
+                <div class="dropzone-copy">
+
+                    <h3>Drop your file here</h3>
+
+                    <p>
+                        Drag and drop a file into this area,
+                        or choose one from your device.
+                    </p>
+
+                </div>
+
+
+                <!-- CHOOSE FILE BUTTON -->
+                <button
+                    type="button"
+                    class="btn btn-primary analyze-choose-btn"
+                    id="choose-file-btn"
+                >
+                    Choose File
+                </button>
+
+
+                <!-- SUPPORTED FORMATS -->
+                <div class="supported-formats">
+
+                    PDF <span>·</span>
+                    DOC <span>·</span>
+                    DOCX <span>·</span>
+                    JPG <span>·</span>
+                    JPEG <span>·</span>
+                    PNG <span>·</span>
+                    TXT
+
+                </div>
+
+            </div>
+
+
+            <!-- SELECTED FILE -->
+            <div
+                class="selected-file-card"
+                id="selected-file-card"
+                style="display: none;"
+            >
+
+                <div class="selected-file-icon">
+
+                    <svg
+                        viewBox="0 0 40 40"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                    >
+                        <path
+                            d="M10 5h14l8 8v22H10z"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        />
+
+                        <path
+                            d="M24 5v9h8"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        />
+                    </svg>
+
+                </div>
+
+
+                <div class="selected-file-details">
+
+                    <span class="selected-label">
+                        FILE SELECTED
+                    </span>
+
+                    <strong id="selected-file-name">
+                        filename.ext
+                    </strong>
+
+                    <small id="selected-file-meta">
+                        0 KB · Unknown
+                    </small>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="remove-file-btn"
+                    id="remove-file-btn"
+                    aria-label="Remove selected file"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- ANALYSIS ACTION -->
+            <div
+                class="analysis-action"
+                id="analysis-action"
+                style="display: none;"
+            >
+
+                <div>
+
+                    <span>READY FOR ANALYSIS</span>
+
+                    <small>
+                        The file will be inspected without execution.
+                    </small>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="start-analysis-btn"
+                    id="start-analysis-btn"
+                >
+                    Start Analysis
+                    <span>→</span>
+                </button>
+
+            </div>
+
+
+            <!-- ERROR -->
+            <div
+                class="analyze-error"
+                id="analyze-error"
+                style="display: none;"
+                role="alert"
+            >
+
+                <span>!</span>
+
+                <div>
+
+                    <strong>
+                        Analysis could not start
+                    </strong>
+
+                    <p id="error-message"></p>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATIC SAFETY -->
+            <div class="static-safety-card">
+
+                <span class="safety-check">✓</span>
+
+                <div>
+
+                    <strong>
+                        STATIC ANALYSIS ONLY
+                    </strong>
+
+                    <p>
+                        Files are inspected, never executed.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- ANALYSIS PROGRESS -->
+    <section
+        class="analysis-progress-card"
+        id="analysis-stages"
+        style="display: none;"
+    >
+
+        <div class="progress-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    ANALYSIS IN PROGRESS
+                </span>
+
+                <h2>Examining file</h2>
+
+            </div>
+
+
+            <span
+                class="progress-state"
+                id="progress-state"
+            >
+                PROCESSING
+            </span>
+
+        </div>
+
+
+        <!-- PROGRESS BAR -->
+        <div class="progress-line">
+
+            <div
+                class="progress-line-fill"
+                id="progress-line-fill"
+            ></div>
+
+        </div>
+
+
+        <!-- ANALYSIS STAGES -->
+        <div class="stage-list">
+
+            <div class="stage" id="stage-01">
+                <span class="stage-number">01</span>
+                <span class="stage-name">Hashing</span>
+                <span class="stage-status">PENDING</span>
+            </div>
+
+            <div class="stage" id="stage-02">
+                <span class="stage-number">02</span>
+                <span class="stage-name">File Identification</span>
+                <span class="stage-status">PENDING</span>
+            </div>
+
+            <div class="stage" id="stage-03">
+                <span class="stage-number">03</span>
+                <span class="stage-name">Metadata</span>
+                <span class="stage-status">PENDING</span>
+            </div>
+
+            <div class="stage" id="stage-04">
+                <span class="stage-number">04</span>
+                <span class="stage-name">Strings</span>
+                <span class="stage-status">PENDING</span>
+            </div>
+
+            <div class="stage" id="stage-05">
+                <span class="stage-number">05</span>
+                <span class="stage-name">Entropy</span>
+                <span class="stage-status">PENDING</span>
+            </div>
+
+            <div class="stage" id="stage-06">
+                <span class="stage-number">06</span>
+                <span class="stage-name">PE Analysis</span>
+                <span class="stage-status">PENDING</span>
+            </div>
+
+            <div class="stage" id="stage-07">
+                <span class="stage-number">07</span>
+                <span class="stage-name">Indicators</span>
+                <span class="stage-status">PENDING</span>
+            </div>
+
+            <div class="stage" id="stage-08">
+                <span class="stage-number">08</span>
+                <span class="stage-name">Risk Assessment</span>
+                <span class="stage-status">PENDING</span>
+            </div>
+
+            <div class="stage" id="stage-09">
+                <span class="stage-number">09</span>
+                <span class="stage-name">Report</span>
+                <span class="stage-status">PENDING</span>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script src="{{ url_for('static', filename='js/analyze.js') }}"></script>
+
+{% endblock %}
