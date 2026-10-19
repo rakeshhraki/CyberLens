@@ -2,146 +2,65 @@
 
 **Static File Threat Triage & Malware Analysis Workbench**
 
-*"See the file. Understand the risk."*
+> *See the file. Understand the risk.*
 
 ## Overview
 
-CyberLens is a defensive static analysis platform designed to help security analysts investigate suspicious files by examining static characteristics and presenting evidence-based risk indicators. It performs safe static analysis without ever executing uploaded files.
+CyberLens is a defensive static analysis platform designed to help security analysts investigate files by examining their static characteristics and presenting evidence-based security indicators.
+
+CyberLens performs analysis **without executing uploaded files**. It combines file identification, cryptographic hashing, metadata inspection, string extraction, entropy analysis, PE analysis, indicator detection, and explainable risk scoring into a single investigation workflow.
 
 ## Important Disclaimer
 
-CyberLens performs static analysis and does not execute uploaded files. Results are indicators intended for preliminary security triage and should not be treated as definitive malware classification. Always investigate suspicious files in an isolated, controlled environment.
+CyberLens is designed for **preliminary security triage** and educational analysis.
 
-## Installation
+Analysis results represent static indicators and should **not** be treated as definitive malware classification. Suspicious files should always be investigated in an isolated and controlled environment.
 
-### Prerequisites
+CyberLens does not execute uploaded files.
 
-- Python 3.12+
-- pip
+---
 
-### Setup
+## Key Features
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd cyberlens
-```
-
-2. Create a virtual environment:
-```bash
-python -m venv venv
-```
-
-3. Activate the virtual environment:
-
-On Windows:
-```bash
-venv\Scripts\activate
-```
-
-On macOS/Linux:
-```bash
-source venv/bin/activate
-```
-
-4. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-5. Create a `.env` file:
-```bash
-copy .env.example .env
-```
-
-Edit `.env` and set your secret key and other configuration values.
-
-6. Run the application:
-```bash
-python app.py
-```
-
-7. Open your browser and navigate to:
-```
-http://localhost:5000
-```
-
-## Project Structure
-
-```
-cyberlens/
-├── app.py                 # Flask application
-├── config.py              # Configuration
-├── requirements.txt       # Python dependencies
-├── .env.example          # Environment variables template
-├── .gitignore            # Git ignore rules
-├── README.md             # This file
-├── LICENSE               # License file
-├── analyzer/             # Static analysis modules
-├── database/             # Database models
-├── routes/               # API routes
-├── reports/              # Report generation
-├── templates/            # HTML templates
-├── static/               # CSS, JS, assets
-├── uploads/              # File upload directory
-├── sample_data/          # Test samples
-├── tests/                # Test suite
-└── instance/             # Database instance
-```
-
-## Features
-
-- Safe static file analysis (no execution)
-- Cryptographic hashing (MD5, SHA-1, SHA-256)
-- File identification and metadata extraction
-- String extraction and analysis
+- Secure file upload and validation
+- Static analysis without file execution
+- File type and MIME identification
+- MD5, SHA-1 and SHA-256 hashing
+- File metadata analysis
+- String extraction and categorization
 - Entropy analysis
-- PE file analysis for Windows executables
+- PE file analysis
 - Suspicious indicator detection
-- Transparent risk scoring system
-- Professional investigation reports
-- Investigation history with search and filtering
+- Explainable risk scoring
+- Analyst verdicts and recommendations
+- Investigation history
+- Search and filtering
+- PDF investigation reports
+- Responsive security-focused interface
 
-## Security Model
+---
 
-CyberLens follows a strict static-only analysis approach:
+## Analysis Workflow
 
-- All uploaded files are treated as untrusted input
-- Files are never executed, opened, or launched
-- Filenames are sanitized and randomized for storage
-- File size limits prevent resource exhaustion
-- Path traversal protection prevents directory escape
-- Analysis results are indicators, not definitive classifications
-
-## Technology Stack
-
-- **Backend**: Python 3.12+, Flask, SQLAlchemy, SQLite
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **Analysis**: hashlib, pathlib, os, re, math, datetime, python-magic, pefile
-- **Reports**: ReportLab
-- **Testing**: pytest
-- **Configuration**: python-dotenv
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Future Improvements
-
-Planned features for future versions:
-
-- YARA rules integration
-- VirusTotal hash lookup
-- Threat intelligence feeds
-- ClamAV integration
-- Sandbox integration
-- MITRE ATT&CK mapping
-- IOC extraction
-- User authentication
-- Multi-user analyst support
-- Docker isolation
-- Malware family classification
-
-## Contact
-
-For questions or issues, please open an issue on GitHub.
+```text
+File Upload
+     ↓
+File Identification
+     ↓
+Cryptographic Hashing
+     ↓
+Metadata Analysis
+     ↓
+String Extraction
+     ↓
+Entropy Analysis
+     ↓
+PE Analysis
+     ↓
+Indicator Detection
+     ↓
+Risk Scoring
+     ↓
+Analyst Verdict
+     ↓
+Investigation Report
