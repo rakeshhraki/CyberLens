@@ -87,7 +87,7 @@ The CyberLens dashboard provides an overview of recent investigations, risk dist
 
 The file analysis interface allows analysts to select a file for static analysis. Uploaded files are inspected without execution.
 
-![CyberLens File Analysis](Analysis.png)
+![CyberLens File Analysis](Analyze.png)
 
 ---
 
